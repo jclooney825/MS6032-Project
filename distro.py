@@ -1,6 +1,7 @@
 from matplotlib.pyplot import axis
 import pandas as pd 
 import numpy as np
+import networkx as nx 
 
 '''
 James Clooney 
@@ -55,3 +56,28 @@ class Distribution:
         tot_ratings_df =pd.DataFrame(data, columns=['node', 'overall_rating'])
         
         return tot_ratings_df
+
+
+    # Returns the degree values and average cc for the degree 
+    def cc_by_degree(graph):
+        # Convert graph to undirected 
+        graph = graph.to_undirected()
+
+        # Calculate clustering coeff. for all nodes 
+        cc = nx.clustering(graph)
+        
+        # Create dataframe with node number, clustering coeffcient, and degree 
+        df_cc = pd.DataFrame(cc.items(), columns = ['node', 'cc'])
+        df_cc['degree'] =  [i[1] for i in graph.degree()]
+
+        # Find all unique values of degrees
+        degrees = pd.unique(df_cc['degree'])
+
+        # Average cc for all unique degrees 
+        f = lambda i: df_cc[df_cc['degree'] == i]
+        y = [np.mean(f(i)['cc']) for i in degrees]
+
+        return degrees,y 
+
+        
+   

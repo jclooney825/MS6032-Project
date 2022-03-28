@@ -22,7 +22,7 @@ def main():
                                         create_using=nx.DiGraph)
 
 
-#############################   NEGATIVE RATINGS    ##############################
+    #############################   NEGATIVE RATINGS    ##############################
 
     neg_in_degree_df = pd.DataFrame(neg_net.in_degree, columns=['node', 'degree']).sort_values(by='node')
     neg_out_degree_df = pd.DataFrame(neg_net.out_degree, columns=['node', 'degree']).sort_values(by='node')
@@ -39,6 +39,27 @@ def main():
 
     #plot_pdf(in_distro, out_distro)
     #plot_ccdf(in_distro, out_distro)
+
+
+    CC_vs_degree(neg_net)
+
+
+
+def CC_vs_degree(net):
+    plt.rcParams['mathtext.fontset'] = 'stix'
+    plt.rcParams['font.family'] = 'STIXGeneral'
+    plt.title(r'ABC123 vs $\mathrm{ABC123}^{123}$')
+
+    x,y = Distribution.cc_by_degree(net)
+
+    plt.scatter(x,y,  s = 12, color = 'red')
+    plt.xlabel(r'$k$', fontsize=14)
+    plt.ylabel(r'$\left< C(k) \right>$', fontsize=14)
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.grid(True)
+    plt.title(r'Average Clustering Coefficient vs Degree for $L_{-}$',  fontsize=16)
+    plt.show()
 
 
  # Plots probability density function (PDF)

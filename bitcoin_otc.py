@@ -33,7 +33,7 @@ def main():
                                     create_using=nx.DiGraph)
 
 
-#############################   ALL RATINGS    ##############################
+    #############################   ALL RATINGS    ##############################
 
     # In/Out degree dataframes (all ratings)
     in_degree_df = pd.DataFrame(net.in_degree, columns=['node', 'degree']).sort_values(by='node')
@@ -47,12 +47,13 @@ def main():
     in_distro = Distribution.distributions(in_degree_df)
     out_distro = Distribution.distributions(out_degree_df)
 
-    plot_pdf(in_distro, out_distro)
-    plot_ccdf(in_distro, out_distro)
-    plot_cc(df)    
+    #plot_pdf(in_distro, out_distro)
+    #plot_ccdf(in_distro, out_distro)
+    #plot_cc(df)    
 
+    CC_vs_degree(net)
+   
     #plot_top10(df)
-
 
 # Plot top 10 rated users
 def plot_top10(df):
@@ -70,6 +71,24 @@ def plot_top10(df):
     plt.xlabel(r'ID', fontsize=16), plt.ylabel(r'Overall Rating', fontsize=16)
     plt.title(r'Top 10 Rated Users', fontsize=18)
     plt.show()
+
+
+def CC_vs_degree(net):
+    plt.rcParams['mathtext.fontset'] = 'stix'
+    plt.rcParams['font.family'] = 'STIXGeneral'
+    plt.title(r'ABC123 vs $\mathrm{ABC123}^{123}$')
+
+    x,y = Distribution.cc_by_degree(net)
+
+    plt.scatter(x,y,  s = 14)
+    plt.xlabel(r'$k$', fontsize=14)
+    plt.ylabel(r'$\left< C(k) \right>$', fontsize=12)
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.grid(True)
+    plt.title(r'Average Clustering Coefficient vs Degree for $G$',  fontsize=16)
+    plt.show()
+
 
 
 def CC_over_time(df):
