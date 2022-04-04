@@ -1,3 +1,5 @@
+from audioop import reverse
+from re import I
 from matplotlib.pyplot import axis
 import pandas as pd 
 import numpy as np
@@ -79,5 +81,48 @@ class Distribution:
 
         return degrees,y 
 
+
+    def network_growth(df):
+
+        time = df['TIME']
+
+        sum_edges = np.cumsum(df['SOURCE']/df['SOURCE'])
+        norm_edges = (sum_edges - sum_edges.min()) / (sum_edges.max() - sum_edges.min())
+
+        sum_ratings = np.cumsum(df['RATING'])
+        norm_ratings = (sum_ratings  -  sum_ratings.min()) / (sum_ratings.max() -  sum_ratings.min())
+
+        return time, norm_edges, norm_ratings
+
+
+    # Return top 10 users with highest number of interactions on network 
+    def top_5_users_k(df):
+
+        users = df['SOURCE'].unique() 
         
-   
+        tot_inter = [] 
+        for i in users:
+            num_ratings_out = len((df[df['SOURCE'] == i])['TARGET']) 
+            num_ratings_in = len((df[df['TARGET'] == i])['SOURCE']) 
+            
+            tot = num_ratings_out + num_ratings_in 
+            tot_inter.append(tot)
+
+        data = list(zip(users, tot_inter))
+        info = pd.DataFrame(data, columns=['User', 'Num Interactions'])
+        sorted_users = info.sort_values('Num Interactions', ascending=False)    
+        return (sorted_users.head(5))['User']
+
+        
+    def k_vs_t(user, df):
+
+        in_user_data = df[df['SOURCE'] == user]
+        out_user_data = df[df['TARGET'] == user]
+
+        k_in = np.cumsum(in_user_data['SOURCE'] / in_user_data['SOURCE'])
+        k_out = np.cumsum(out_user_data['TARGET'] / out_user_data['TARGET'])
+
+        t_in = in_user_data['TIME']
+        t_out = out_user_data['TIME']
+
+        return t_in, t_out, k_in ,k_out

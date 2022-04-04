@@ -51,9 +51,68 @@ def main():
     #plot_ccdf(in_distro, out_distro)
     #plot_cc(df)    
 
-    CC_vs_degree(net)
-   
+    #CC_vs_degree(net)
+    #cc_distribution(net)
     #plot_top10(df)
+
+    plot_in_k_users(df)
+    plot_out_k_users(df)
+
+def plot_in_k_users(df):
+    plt.rcParams['mathtext.fontset'] = 'stix'
+    plt.rcParams['font.family'] = 'STIXGeneral'
+
+    top_10 = Distribution.top_5_users_k(df)
+
+    for i in top_10:
+        t1,t2, y1,y2 = Distribution.k_vs_t(i, df)
+        plt.plot(t1, y1, label=f'User {i}')
+    
+    plt.ylabel('Normalized Network Growth')
+    plt.title('Top 5 User In-Degree over Time', fontsize=16)
+    plt.legend()
+    plt.show()
+
+def plot_out_k_users(df):
+    plt.rcParams['mathtext.fontset'] = 'stix'
+    plt.rcParams['font.family'] = 'STIXGeneral'
+
+    top_10 = Distribution.top_5_users_k(df)
+
+    for i in top_10:
+        t1,t2, y1,y2 = Distribution.k_vs_t(i, df)
+        plt.plot(t2, y2, label=f'User {i}', linestyle='dashed')
+    
+    plt.ylabel('Normalized Network Growth')
+    plt.title('Top 5 User Out-Degree over Time', fontsize=16)
+    plt.legend()
+    plt.show()
+    
+def network_vs_time(df):
+    plt.rcParams['mathtext.fontset'] = 'stix'
+    plt.rcParams['font.family'] = 'STIXGeneral'
+
+    time, num_edges, num_ratings = Distribution.network_growth(df)
+    plt.plot(time, num_edges, label = 'Edges')
+    plt.plot(time, num_ratings, label = 'Ratings')
+    plt.ylabel('Normalized Network Growth')
+    plt.title('Normalized Edge and Ratings Over Time', fontsize=16)
+    plt.legend()
+    plt.show()
+
+def cc_distribution(net):
+    plt.rcParams['mathtext.fontset'] = 'stix'
+    plt.rcParams['font.family'] = 'STIXGeneral'
+    plt.title(r'ABC123 vs $\mathrm{ABC123}^{123}$')
+
+    cc = nx.clustering(net)
+    df_cc = pd.DataFrame(cc.items(), columns = ['node', 'cc'])
+    plt.hist(df_cc['cc'], bins=10, color='c', edgecolor='k',  alpha=0.5) 
+    plt.xlabel('CC')
+    plt.title('Clustering Coefficient (CC) Distribution', fontsize = 16)
+    plt.show()
+
+
 
 # Plot top 10 rated users
 def plot_top10(df):
@@ -90,34 +149,6 @@ def CC_vs_degree(net):
     plt.show()
 
 
-
-def CC_over_time(df):
-    arr = []
-    for i in range(10,len(df['TIME']), 500):
-        data = df[:i]
-        net = nx.from_pandas_edgelist(  data,
-                                        source='SOURCE',
-                                        target='TARGET',
-                                        edge_attr='RATING',
-                                        create_using=nx.DiGraph)
-        cc = nx.average_clustering(net)
-        arr.append(cc)
-    return arr 
-
-def plot_cc(df):
-    plt.rcParams['mathtext.fontset'] = 'stix'
-    plt.rcParams['font.family'] = 'STIXGeneral'
-    plt.title(r'ABC123 vs $\mathrm{ABC123}^{123}$')
-
-    indicies = np.arange(10,len(df['TIME']), 500)
-    time = df['TIME'][indicies]
-    arr = CC_over_time(df)
-
-    plt.plot(time,arr)
-    plt.ylabel(r'$\left< C \right>$', fontsize=16)
-    plt.grid(True)
-    plt.title(r'Average Clustering Coefficient over Time')
-    plt.show()
 
  # Plots probability density function (PDF)
 def plot_pdf(in_degree_dist, out_degree_dist):
