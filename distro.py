@@ -1,6 +1,3 @@
-from audioop import reverse
-from re import I
-from matplotlib.pyplot import axis
 import pandas as pd 
 import numpy as np
 import networkx as nx 
@@ -126,3 +123,29 @@ class Distribution:
         t_out = out_user_data['TIME']
 
         return t_in, t_out, k_in ,k_out
+
+    def pref_attach(net):
+
+        # Undirect the graph and store data in dataframe 
+        net = net.to_undirected()
+        df = pd.DataFrame(net.degree, columns=['node', 'degree'])
+
+        # All unique degree values 
+        k_vals = df['degree'].unique()
+
+        # Normalization constant 
+        A = np.sum(k_vals)
+        
+        # Normalize data
+        pref_attach = k_vals / A   
+
+        data = list(zip(k_vals, pref_attach))
+        vals = pd.DataFrame(data, columns = ['k', 'pref_attach'])
+
+        vals = vals.sort_values(by = ['k'])
+        return vals['k'], np.cumsum(vals['pref_attach'])
+        
+
+    def num_ratings_over_time(df):
+        num_ratings = np.cumsum(df['TARGET'] /  df['TARGET'])
+        return df['TIME'], num_ratings

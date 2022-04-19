@@ -39,11 +39,7 @@ def main():
 
     #plot_pdf(in_distro, out_distro)
     #plot_ccdf(in_distro, out_distro)
-
-
-    CC_vs_degree(neg_net)
-
-
+    #CC_vs_degree(neg_net)
 
 def CC_vs_degree(net):
     plt.rcParams['mathtext.fontset'] = 'stix'

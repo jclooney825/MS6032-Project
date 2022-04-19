@@ -54,8 +54,7 @@ def main():
     #plot_ccdf(in_distro, out_distro)
     #plot_top10(df)
 
-    
-    CC_vs_degree(pos_net)
+    #CC_vs_degree(pos_net)
 
 def CC_vs_degree(net):
     plt.rcParams['mathtext.fontset'] = 'stix'

@@ -55,8 +55,26 @@ def main():
     #cc_distribution(net)
     #plot_top10(df)
 
-    plot_in_k_users(df)
-    plot_out_k_users(df)
+    #plot_in_k_users(df)
+    #plot_out_k_users(df)
+    
+    plot_pref_attach(net)
+
+
+def plot_pref_attach(net):
+    plt.rcParams['mathtext.fontset'] = 'stix'
+    plt.rcParams['font.family'] = 'STIXGeneral'
+
+    k_i, pi_i = Distribution.pref_attach(net)
+    plt.scatter(k_i, pi_i, s = 10)
+    plt.xlabel('$k$', fontsize=13)
+    plt.ylabel('$\pi(k)$', fontsize=13)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.grid(True)
+    plt.title('Cumulative Preferential Attachment of G', fontsize=16)
+    plt.show()
+
 
 def plot_in_k_users(df):
     plt.rcParams['mathtext.fontset'] = 'stix'
@@ -68,8 +86,9 @@ def plot_in_k_users(df):
         t1,t2, y1,y2 = Distribution.k_vs_t(i, df)
         plt.plot(t1, y1, label=f'User {i}')
     
-    plt.ylabel('Normalized Network Growth')
-    plt.title('Top 5 User In-Degree over Time', fontsize=16)
+    plt.ylabel('Total Degree')
+    plt.xscale('log')
+    plt.title('Top 5 Users: Total In-Degree over Time', fontsize=16)
     plt.legend()
     plt.show()
 
@@ -83,7 +102,8 @@ def plot_out_k_users(df):
         t1,t2, y1,y2 = Distribution.k_vs_t(i, df)
         plt.plot(t2, y2, label=f'User {i}', linestyle='dashed')
     
-    plt.ylabel('Normalized Network Growth')
+    plt.ylabel('Normalized Network Growth') 
+    plt.yscale('log')
     plt.title('Top 5 User Out-Degree over Time', fontsize=16)
     plt.legend()
     plt.show()
